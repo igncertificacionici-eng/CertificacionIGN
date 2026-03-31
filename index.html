@@ -2,54 +2,29 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Supervisión Geodésica IGN</title>
+  <title>Crear Carpeta</title>
 </head>
 <body>
-  <form id="ignForm">
-    <label for="codigo">Código del punto:</label>
-    <input type="text" id="codigo" name="codigo" required>
-
-    <label>Proceso de monumentación:</label>
-    <input type="file" id="proceso" accept="image/*" multiple>
-
-    <button type="submit">Enviar</button>
+  <form id="folderForm">
+    <label for="nombre">Nombre de la carpeta:</label>
+    <input type="text" id="nombre" name="nombre" required>
+    <button type="submit">Crear Carpeta</button>
   </form>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
 
-    function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = error => reject(error);
-      });
-    }
+    document.getElementById("folderForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const nombre = document.getElementById("nombre").value.trim();
+      if(!nombre){ alert("Debes ingresar un nombre"); return; }
 
-    async function uploadFile(file, codigo, campo) {
-      const base64 = await toBase64(file);
       const formData = new FormData();
-      formData.append("file", base64);
-      formData.append("name", file.name);
-      formData.append("section", campo);
-      formData.append("codigo", codigo);
+      formData.append("nombre", nombre);
 
       const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-      return await res.text();
-    }
-
-    document.getElementById("ignForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const codigo = document.getElementById("codigo").value.trim();
-      if(!codigo){ alert("Debes ingresar un código"); return; }
-
-      const files = Array.from(document.getElementById("proceso").files);
-      for(const file of files){
-        const result = await uploadFile(file, codigo, "proceso");
-        console.log(result);
-        alert(result);
-      }
+      const text = await res.text();
+      alert(text);
     });
   </script>
 </body>
