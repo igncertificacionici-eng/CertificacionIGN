@@ -2,76 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Supervisión Geodésica IGN</title>
-  <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background:#eef2f7; margin:0; padding:0; }
-    header { background:#004aad; color:#fff; text-align:center; padding:20px; }
-    header img { height:70px; margin-bottom:10px; }
-    main { max-width:800px; margin:30px auto; background:#fff; padding:25px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-    h2 { color:#004aad; text-align:center; }
-    .section { margin-bottom:25px; padding-bottom:15px; border-bottom:1px solid #eee; }
-    label { font-weight:bold; display:block; margin-top:10px; }
-    input[type="text"], input[type="file"] { width:100%; padding:10px; margin-top:8px; border:1px solid #ccc; border-radius:6px; }
-    button { margin-top:20px; width:100%; padding:12px; background:#004aad; color:#fff; border:none; border-radius:6px; font-size:16px; cursor:pointer; }
-    button:hover { background:#00337a; }
-    .preview { display:flex; flex-wrap:wrap; margin-top:10px; }
-    .preview img, .preview video { width:120px; margin:5px; border-radius:8px; border:2px solid #ddd; object-fit:cover; }
-  </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo Empresa">
-    <h1>Supervisión Geodésica IGN</h1>
-  </header>
+  <h1>Supervisión Geodésica IGN</h1>
 
-  <main>
-    <h2>Formulario de Registro</h2>
-    <button id="loginBtn">Iniciar sesión con Google</button>
-    <form id="ignForm">
-      <div class="section">
-        <label for="codigo">Código del punto:</label>
-        <input type="text" id="codigo" name="codigo" required>
-      </div>
+  <!-- Botón de login -->
+  <div id="g_id_onload"
+       data-client_id="518460759338-9nu8fmfuoa34bshp81eiecgcb7gqaklc.apps.googleusercontent.com"
+       data-context="signin"
+       data-ux_mode="popup"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
 
-      <div class="section">
-        <label>Proceso de monumentación (máx. 5 fotos):</label>
-        <input type="file" id="proceso" accept="image/*" multiple>
-        <div class="preview" id="previewProceso"></div>
-      </div>
+  <form id="ignForm">
+    <label>Código del punto:</label>
+    <input type="text" id="codigo" required>
+    <br><br>
+    <label>Fotos (máx. 5):</label>
+    <input type="file" id="proceso" accept="image/*" multiple>
+    <br><br>
+    <button type="submit">Enviar</button>
+  </form>
 
-      <div class="section">
-        <label>Videos:</label>
-        <input type="file" id="videos" accept="video/*" multiple>
-        <div class="preview" id="previewVideos"></div>
-      </div>
-
-      <button type="submit">Enviar</button>
-    </form>
-  </main>
-
-  <!-- Librería de Google API -->
-  <script src="https://apis.google.com/js/api.js"></script>
   <script>
     let accessToken = null;
     const FOLDER_ID = "1PJTQaPUFcv3F6bZr3JQDO5STzzW-L5oK"; // Carpeta Certificacion
 
-    function initClient() {
-      gapi.client.init({
-        clientId: "518460759338-9nu8fmfuoa34bshp81eiecgcb7gqaklc.apps.googleusercontent.com",
-        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-        scope: "https://www.googleapis.com/auth/drive.file"
-      }).then(() => {
-        document.getElementById("loginBtn").onclick = () => {
-          gapi.auth2.getAuthInstance().signIn().then(() => {
-            accessToken = gapi.auth.getToken().access_token;
-            alert("Sesión iniciada correctamente con Google Drive.");
-          });
-        };
-      });
+    // Callback de login
+    function handleCredentialResponse(response) {
+      // Aquí recibes el JWT de Google Identity Services
+      console.log("Credenciales:", response);
+      alert("Sesión iniciada correctamente.");
+      // En este punto normalmente se intercambia el token en un backend
+      // para obtener un access_token de Drive. En front-end puro no es seguro.
     }
-    gapi.load("client:auth2", initClient);
 
+    // Subida de archivos (requiere access_token válido)
     async function uploadFile(file) {
       const metadata = { name: file.name, mimeType: file.type, parents: [FOLDER_ID] };
       const form = new FormData();
@@ -86,33 +56,6 @@
       return await response.json();
     }
 
-    function setupPreview(inputId, previewId, maxFiles=5, isVideo=false){
-      const input=document.getElementById(inputId);
-      const preview=document.getElementById(previewId);
-      input.addEventListener("change",()=>{
-        preview.innerHTML="";
-        const files=Array.from(input.files).slice(0,maxFiles);
-        files.forEach(file=>{
-          const reader=new FileReader();
-          reader.onload=e=>{
-            if(isVideo){
-              const video=document.createElement("video");
-              video.src=e.target.result; video.controls=true; video.width=200;
-              preview.appendChild(video);
-            } else {
-              const img=document.createElement("img");
-              img.src=e.target.result;
-              preview.appendChild(img);
-            }
-          };
-          reader.readAsDataURL(file);
-        });
-      });
-    }
-
-    setupPreview("proceso","previewProceso");
-    setupPreview("videos","previewVideos",5,true);
-
     document.getElementById("ignForm").addEventListener("submit", async e=>{
       e.preventDefault();
       if(!accessToken){ alert("Primero inicia sesión con Google."); return; }
@@ -124,13 +67,6 @@
         const result=await uploadFile(file);
         console.log("Foto subida:",result);
       }
-
-      const videos=Array.from(document.getElementById("videos").files).slice(0,5);
-      for(const file of videos){
-        const result=await uploadFile(file);
-        console.log("Video subido:",result);
-      }
-
       alert("Todos los archivos fueron enviados a Google Drive.");
     });
   </script>
