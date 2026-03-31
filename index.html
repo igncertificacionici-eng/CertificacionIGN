@@ -61,7 +61,7 @@
       formData.append("file", base64);
       formData.append("name", file.name);
       formData.append("section", campo);
-      formData.append("codigo", codigo);
+      formData.append("codigo", codigo); // 🔑 enviamos el código
 
       const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
       return await res.text();
@@ -69,7 +69,7 @@
 
     document.getElementById("ignForm").addEventListener("submit", async e => {
       e.preventDefault();
-      const codigo = document.getElementById("codigo").value;
+      const codigo = document.getElementById("codigo").value; // 🔑 tomamos el valor del input
       const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
 
       for(const campo of campos){
