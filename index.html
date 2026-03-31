@@ -44,7 +44,7 @@
   </main>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
+    const SCRIPT_URL = "TU_URL_DE_APPS_SCRIPT"; // reemplaza con tu URL de despliegue
 
     function toBase64(file) {
       return new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@
       formData.append("file", base64);
       formData.append("name", file.name);
       formData.append("section", campo);
-      formData.append("codigo", codigo); // 🔑 enviamos el código
+      formData.append("codigo", codigo);
 
       const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
       return await res.text();
@@ -69,19 +69,9 @@
 
     document.getElementById("ignForm").addEventListener("submit", async e => {
       e.preventDefault();
-      const codigo = document.getElementById("codigo").value.trim(); // 🔑 tomamos el valor del input
+      const codigo = document.getElementById("codigo").value.trim();
+      if(!codigo){ alert("Debes ingresar un código"); return; }
+
       const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
 
       for(const campo of campos){
-        const files = Array.from(document.getElementById(campo).files).slice(0,5);
-        for(const file of files){
-          const result = await uploadFile(file, codigo, campo);
-          console.log(result);
-        }
-      }
-
-      alert("Archivos enviados a la carpeta Certificacion → " + codigo);
-    });
-  </script>
-</body>
-</html>
