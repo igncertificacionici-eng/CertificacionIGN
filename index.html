@@ -54,11 +54,12 @@
   <script src="https://apis.google.com/js/api.js"></script>
   <script>
     let accessToken = null;
+    const FOLDER_ID = "1PJTQaPUFcv3F6bZr3JQDO5STzzW-L5oK"; // Carpeta Certificacion
 
-    // Inicializar cliente con tu Client ID
     function initClient() {
       gapi.client.init({
         clientId: "518460759338-9nu8fmfuoa34bshp81eiecgcb7gqaklc.apps.googleusercontent.com",
+        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
         scope: "https://www.googleapis.com/auth/drive.file"
       }).then(() => {
         document.getElementById("loginBtn").onclick = () => {
@@ -71,10 +72,8 @@
     }
     gapi.load("client:auth2", initClient);
 
-    // Función para subir archivo a Drive
-    async function uploadFile(file, folderId=null) {
-      const metadata = { name: file.name, mimeType: file.type };
-      if(folderId){ metadata.parents = [folderId]; }
+    async function uploadFile(file) {
+      const metadata = { name: file.name, mimeType: file.type, parents: [FOLDER_ID] };
       const form = new FormData();
       form.append("metadata", new Blob([JSON.stringify(metadata)], {type: "application/json"}));
       form.append("file", file);
@@ -87,7 +86,6 @@
       return await response.json();
     }
 
-    // Previews
     function setupPreview(inputId, previewId, maxFiles=5, isVideo=false){
       const input=document.getElementById(inputId);
       const preview=document.getElementById(previewId);
@@ -115,22 +113,21 @@
     setupPreview("proceso","previewProceso");
     setupPreview("videos","previewVideos",5,true);
 
-    // Enviar formulario
     document.getElementById("ignForm").addEventListener("submit", async e=>{
       e.preventDefault();
       if(!accessToken){ alert("Primero inicia sesión con Google."); return; }
       const codigo=document.getElementById("codigo").value;
       alert("Subiendo archivos para el punto: "+codigo);
 
-      const files=Array.from(document.getElementById("proceso").files).slice(0,5);
-      for(const file of files){
-        const result=await uploadFile(file,"1PJTQaPUFcv3F6bZr3JQDO5STzzW-L5oK"); // ID de tu carpeta Certificacion
-        console.log("Archivo subido:",result);
+      const fotos=Array.from(document.getElementById("proceso").files).slice(0,5);
+      for(const file of fotos){
+        const result=await uploadFile(file);
+        console.log("Foto subida:",result);
       }
 
       const videos=Array.from(document.getElementById("videos").files).slice(0,5);
       for(const file of videos){
-        const result=await uploadFile(file,"1PJTQaPUFcv3F6bZr3JQDO5STzzW-L5oK");
+        const result=await uploadFile(file);
         console.log("Video subido:",result);
       }
 
