@@ -57,7 +57,6 @@
 
     async function uploadFile(file, codigo, campo) {
       const base64 = await toBase64(file);
-      console.log("Enviando:", file.name, "→ sección:", campo); // depuración
       const formData = new FormData();
       formData.append("file", base64);
       formData.append("name", file.name);
@@ -81,7 +80,7 @@
         }
       }
 
-      alert("Archivos enviados a la carpeta Certificacion.");
+      alert("Archivos enviados a la carpeta Certificacion → " + codigo);
     });
   </script>
 </body>
