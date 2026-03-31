@@ -63,18 +63,6 @@
     button:hover {
       background: #00337a;
     }
-    .preview {
-      display: flex;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
-    .preview img, .preview video {
-      width: 120px;
-      margin: 5px;
-      border-radius: 8px;
-      border: 2px solid #ddd;
-      object-fit: cover;
-    }
   </style>
 </head>
 <body>
@@ -110,7 +98,9 @@
     async function uploadFile(file, codigo, campo) {
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("name", codigo + "_" + campo + "_" + file.name);
+      formData.append("name", file.name);       // mantiene nombre original
+      formData.append("section", campo);        // subcarpeta por sección
+      formData.append("codigo", codigo);        // opcional, para referencia
 
       const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
       return await res.text();
@@ -129,7 +119,7 @@
         }
       }
 
-      alert("Todos los archivos fueron enviados a la carpeta Certificacion.");
+      alert("Todos los archivos fueron enviados a la carpeta Certificación.");
     });
   </script>
 </body>
