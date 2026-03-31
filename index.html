@@ -8,39 +8,35 @@
   <h2>Subir archivo de prueba</h2>
   <input type="file" id="archivo">
   <button onclick="enviar()">Enviar</button>
+<script>
+  const SCRIPT_URL = "TU_URL_DE_SCRIPT";
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
+  function toBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // solo base64
+      reader.onerror = error => reject(error);
+    });
+  }
 
-    // Convertir archivo a base64
-    function toBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(",")[1]); // solo la parte base64
-        reader.onerror = error => reject(error);
-      });
-    }
+  async function enviar() {
+    const file = document.getElementById("archivo").files[0];
+    if (!file) { alert("Selecciona un archivo"); return; }
 
-    async function enviar() {
-      const file = document.getElementById("archivo").files[0];
-      if (!file) {
-        alert("Selecciona un archivo primero");
-        return;
-      }
+    const base64 = await toBase64(file);
+    console.log("Base64 generado:", base64.substring(0,100)); // depuración
 
-      const base64 = await toBase64(file);
-      console.log("Base64 generado:", base64.substring(0,100)); // depuración
+    const formData = new FormData();
+    formData.append("file", base64);
+    formData.append("name", file.name);
+    formData.append("section", "prueba");
 
-      const formData = new FormData();
-      formData.append("file", base64);
-      formData.append("name", file.name);
-      formData.append("section", "prueba"); // subcarpeta "prueba"
+    const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
+    alert(await res.text());
+  }
+</script>
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-      const text = await res.text();
-      alert(text);
-    }
-  </script>
+ 
 </body>
 </html>
