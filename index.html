@@ -75,3 +75,15 @@
       const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
 
       for(const campo of campos){
+        const files = Array.from(document.getElementById(campo).files).slice(0,5);
+        for(const file of files){
+          const result = await uploadFile(file, codigo, campo);
+          console.log(result);
+        }
+      }
+
+      alert("Archivos enviados a la carpeta Certificacion → " + codigo);
+    });
+  </script>
+</body>
+</html>
