@@ -3,49 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <title>Supervisión Geodésica IGN</title>
-  <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #eef2f7; margin: 0; padding: 0; }
-    header { background: #004aad; color: #fff; text-align: center; padding: 20px; }
-    header img { height: 70px; margin-bottom: 10px; }
-    main { max-width: 900px; margin: 30px auto; background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    h2 { color: #004aad; text-align: center; }
-    .section { margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
-    label { font-weight: bold; display: block; margin-top: 10px; }
-    input[type="text"], input[type="file"] { width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ccc; border-radius: 6px; }
-    button { margin-top: 20px; width: 100%; padding: 12px; background: #004aad; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
-    button:hover { background: #00337a; }
-  </style>
 </head>
 <body>
-  <header>
-    <img src="logo.png" alt="Logo Empresa">
-    <h1>Supervisión Geodésica IGN</h1>
-  </header>
+  <form id="ignForm">
+    <label for="codigo">Código del punto:</label>
+    <input type="text" id="codigo" name="codigo" required>
 
-  <main>
-    <h2>Formulario de Registro</h2>
-    <form id="ignForm">
-      <div class="section">
-        <label for="codigo">Código del punto:</label>
-        <input type="text" id="codigo" name="codigo" required>
-      </div>
+    <label>Proceso de monumentación:</label>
+    <input type="file" id="proceso" accept="image/*" multiple>
 
-      <div class="section"><label>Proceso de monumentación:</label><input type="file" id="proceso" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Profundidad:</label><input type="file" id="profundidad" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Anclaje de disco de bronce:</label><input type="file" id="anclaje" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Incrustación del disco de bronce:</label><input type="file" id="incrustacion" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Disco instalado:</label><input type="file" id="disco" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Medición de altura de antena:</label><input type="file" id="altura" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Fotografías panorámicas:</label><input type="file" id="panoramicas" accept="image/*" capture="camera" multiple></div>
-      <div class="section"><label>Videos:</label><input type="file" id="videos" accept="video/*" capture="camera" multiple></div>
-
-      <button type="submit">Enviar</button>
-    </form>
-  </main>
+    <button type="submit">Enviar</button>
+  </form>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
-
 
     function toBase64(file) {
       return new Promise((resolve, reject) => {
@@ -73,17 +44,12 @@
       const codigo = document.getElementById("codigo").value.trim();
       if(!codigo){ alert("Debes ingresar un código"); return; }
 
-      const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
-
-      for(const campo of campos){
-        const files = Array.from(document.getElementById(campo).files).slice(0,5);
-        for(const file of files){
-          const result = await uploadFile(file, codigo, campo);
-          console.log(result);
-        }
+      const files = Array.from(document.getElementById("proceso").files);
+      for(const file of files){
+        const result = await uploadFile(file, codigo, "proceso");
+        console.log(result);
+        alert(result);
       }
-
-      alert("Archivos enviados a la carpeta principal → " + codigo);
     });
   </script>
 </body>
