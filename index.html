@@ -33,14 +33,14 @@
         </div>
 
         <h5 class="section-title">Carga de archivos</h5>
-        <div class="mb-3"><label class="form-label">Proceso de monumentación:</label><input type="file" id="2. Proceso de monumentación" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Profundidad:</label><input type="file" id="3. Profundidad" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Anclaje de disco de bronce:</label><input type="file" id="4. Anclaje de disco de bronce" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Incrustación del disco de bronce:</label><input type="file" id="5. Incrustación de disco de bronce" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Disco instalado:</label><input type="file" id="6. Disco instalado" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Medición de altura de antena:</label><input type="file" id="7. Medición de altura de antena" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Fotografías panorámicas:</label><input type="file" id="8. Fotografia panoramicas" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Videos:</label><input type="file" id="9. Videos" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Proceso de monumentación:</label><input type="file" id="proceso" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Profundidad:</label><input type="file" id="profundidad" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Anclaje de disco de bronce:</label><input type="file" id="anclaje" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Incrustación del disco de bronce:</label><input type="file" id="incrustacion" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Disco instalado:</label><input type="file" id="disco" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Medición de altura de antena:</label><input type="file" id="altura" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Fotografías panorámicas:</label><input type="file" id="panoramicas" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Videos:</label><input type="file" id="videos" class="form-control" multiple></div>
 
         <button type="submit" class="btn btn-primary w-100 mt-3">Enviar Evidencias</button>
       </form>
@@ -79,16 +79,7 @@
       const codigo = document.getElementById("codigo").value.trim();
       if(!codigo){ alert("Debes ingresar un código"); return; }
 
-      const campos = [
-  "2. Proceso de monumentación",
-  "3. Profundidad",
-  "4. Anclaje de disco de bronce",
-  "5. Incrustación de disco de bronce",
-  "6. Disco instalado",
-  "7. Medición de altura de antena",
-  "8. Fotografia panoramicas",
-  "9. Videos"
-];
+      const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
 
       for(const campo of campos){
         const files = Array.from(document.getElementById(campo).files);
