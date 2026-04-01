@@ -1,31 +1,22 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Crear Carpeta</title>
-</head>
-<body>
-  <form id="folderForm">
-    <label for="nombre">Nombre de la carpeta:</label>
-    <input type="text" id="nombre" name="nombre" required>
-    <button type="submit">Crear Carpeta</button>
-  </form>
+<form id="folderForm">
+  <label for="nombre">Nombre de la carpeta:</label>
+  <input type="text" id="nombre" name="nombre" required>
+  <button type="submit">Crear Carpeta</button>
+</form>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
 
-    document.getElementById("folderForm").addEventListener("submit", async e => {
-      e.preventDefault();
-      const nombre = document.getElementById("nombre").value.trim();
-      if(!nombre){ alert("Debes ingresar un nombre"); return; }
+  document.getElementById("folderForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const nombre = document.getElementById("nombre").value.trim();
+    if(!nombre){ alert("Debes ingresar un nombre"); return; }
 
-      const formData = new FormData();
-      formData.append("nombre", nombre);
+    const formData = new FormData();
+    formData.append("nombre", nombre);
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-      const text = await res.text();
-      alert(text);
-    });
-  </script>
-</body>
-</html>
+    const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
+    const text = await res.text();
+    alert(text);
+  });
+</script>
