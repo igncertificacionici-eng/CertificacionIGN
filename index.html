@@ -57,7 +57,7 @@
         <div id="fileInputs" class="mb-3">
           <div class="flex-input mb-2">
             <label class="form-label">📷 Archivo 1:</label>
-            <input type="file" id="file1" class="form-control" accept="image/*,video/*" capture="environment" required>
+            <input type="file" id="file1" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
           </div>
         </div>
 
@@ -87,7 +87,7 @@
       div.classList.add("flex-input","mb-2");
       div.innerHTML = `
         <label class="form-label">📷 Archivo ${fileCount}:</label>
-        <input type="file" id="file${fileCount}" class="form-control" accept="image/*,video/*" capture="environment" required>
+        <input type="file" id="file${fileCount}" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
       `;
       fileInputsDiv.appendChild(div);
       actualizarContador();
@@ -128,7 +128,7 @@
       fileInputsDiv.innerHTML = `
         <div class="flex-input mb-2">
           <label class="form-label">📷 Archivo 1:</label>
-          <input type="file" id="file1" class="form-control" accept="image/*,video/*" capture="environment" required>
+          <input type="file" id="file1" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
         </div>
       `;
       fileCount = 1;
