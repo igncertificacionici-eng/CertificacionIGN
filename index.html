@@ -33,12 +33,11 @@
         </div>
 
         <div id="fileInputs" class="mb-3">
-          <label class="form-label">Archivo 1:</label>
-          <input type="file" id="file1" name="file1" class="form-control" accept="image/*,video/*" required>
+          <label class="form-label">Archivo:</label>
+          <input type="file" id="file1" class="form-control" accept="image/*,video/*" required>
         </div>
 
-        <button type="button" id="addFile" class="btn btn-secondary mb-3 w-100">Añadir otra evidencia</button>
-        <button type="submit" class="btn btn-primary w-100">Enviar Evidencias</button>
+        <button type="submit" class="btn btn-primary w-100">Enviar Evidencia</button>
       </form>
     </div>
   </main>
@@ -46,36 +45,30 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
 
-    let fileCount = 1;
-    const fileInputsDiv = document.getElementById("fileInputs");
-    document.getElementById("addFile").addEventListener("click", () => {
-      fileCount++;
-      const div = document.createElement("div");
-      div.innerHTML = `
-        <label class="form-label">Archivo ${fileCount}:</label>
-        <input type="file" id="file${fileCount}" name="file${fileCount}" class="form-control" accept="image/*,video/*" required>
-      `;
-      fileInputsDiv.appendChild(div);
-    });
+    async function uploadFile(file, codigo, section) {
+      const url = SCRIPT_URL + "?codigo=" + encodeURIComponent(codigo) +
+                  "&section=" + encodeURIComponent(section) +
+                  "&name=" + encodeURIComponent(file.name);
+
+      const res = await fetch(url, { method: "POST", body: file });
+      return await res.text();
+    }
 
     document.getElementById("ignForm").addEventListener("submit", async e => {
       e.preventDefault();
       const codigo = document.getElementById("codigo").value.trim();
       const section = document.getElementById("section").value;
+      const fileInput = document.getElementById("file1");
 
-      const formData = new FormData();
-      formData.append("codigo", codigo);
-      formData.append("section", section);
-
-      for (let i = 1; i <= fileCount; i++) {
-        const fileInput = document.getElementById("file" + i);
-        if (fileInput.files.length > 0) {
-          formData.append("file" + i, fileInput.files[0]);
-        }
+      if (!codigo || !section || fileInput.files.length === 0) {
+        alert("Debes ingresar código, sección y seleccionar un archivo.");
+        return;
       }
 
-      const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-      alert(await res.text());
+      const result = await uploadFile(fileInput.files[0], codigo, section);
+      alert(result);
+
+      document.getElementById("ignForm").reset();
     });
   </script>
 </body>
