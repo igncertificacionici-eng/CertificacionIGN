@@ -3,47 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <title>Certificación IGN</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
-    header { background: #004aad; color: #fff; text-align: center; padding: 15px; }
-    header h1 { margin: 0; font-size: 20px; }
-    main { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    h2 { color: #004aad; font-size: 18px; margin-bottom: 15px; }
-    .section { margin-bottom: 20px; }
-    label { font-weight: bold; display: block; margin-bottom: 8px; }
-    input[type="text"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-    button { width: 100%; padding: 12px; background: #004aad; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
-    button:hover { background: #00337a; }
-    @media (max-width: 600px) {
-      main { margin: 10px; padding: 15px; }
-      header h1 { font-size: 18px; }
-    }
+    body { background: #f4f6f9; }
+    header { background: #004aad; color: #fff; padding: 20px; }
+    header h1 { margin: 0; font-size: 1.6rem; font-weight: 600; }
+    main { max-width: 700px; margin: 30px auto; }
+    .card { border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .form-label { font-weight: 600; color: #004aad; }
+    .btn-primary { background: #004aad; border: none; }
+    .btn-primary:hover { background: #00337a; }
   </style>
 </head>
 <body>
-  <header>
+  <header class="text-center">
     <h1>Certificación Geodésica IGN</h1>
   </header>
   <main>
-    <h2>Formulario de Evidencias</h2>
-    <form id="ignForm">
-      <div class="section">
-        <label for="codigo">Código del punto:</label>
-        <input type="text" id="codigo" name="codigo" required>
-      </div>
+    <div class="card p-4">
+      <h2 class="mb-4 text-primary">Formulario de Evidencias</h2>
+      <form id="ignForm" class="needs-validation" novalidate>
+        <div class="mb-3">
+          <label for="codigo" class="form-label">Código del punto:</label>
+          <input type="text" id="codigo" name="codigo" class="form-control" required>
+          <div class="invalid-feedback">Debes ingresar un código.</div>
+        </div>
 
-      <div class="section"><label>Proceso de monumentación:</label><input type="file" id="proceso" multiple></div>
-      <div class="section"><label>Profundidad:</label><input type="file" id="profundidad" multiple></div>
-      <div class="section"><label>Anclaje de disco de bronce:</label><input type="file" id="anclaje" multiple></div>
-      <div class="section"><label>Incrustación del disco de bronce:</label><input type="file" id="incrustacion" multiple></div>
-      <div class="section"><label>Disco instalado:</label><input type="file" id="disco" multiple></div>
-      <div class="section"><label>Medición de altura de antena:</label><input type="file" id="altura" multiple></div>
-      <div class="section"><label>Fotografías panorámicas:</label><input type="file" id="panoramicas" multiple></div>
-      <div class="section"><label>Videos:</label><input type="file" id="videos" multiple></div>
+        <div class="mb-3"><label class="form-label">Proceso de monumentación:</label><input type="file" id="proceso" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Profundidad:</label><input type="file" id="profundidad" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Anclaje de disco de bronce:</label><input type="file" id="anclaje" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Incrustación del disco de bronce:</label><input type="file" id="incrustacion" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Disco instalado:</label><input type="file" id="disco" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Medición de altura de antena:</label><input type="file" id="altura" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Fotografías panorámicas:</label><input type="file" id="panoramicas" class="form-control" multiple></div>
+        <div class="mb-3"><label class="form-label">Videos:</label><input type="file" id="videos" class="form-control" multiple></div>
 
-      <button type="submit">Enviar Evidencias</button>
-    </form>
+        <button type="submit" class="btn btn-primary w-100">Enviar Evidencias</button>
+      </form>
+    </div>
   </main>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
@@ -85,8 +87,6 @@
       }
 
       alert("Evidencias enviadas correctamente para el punto: " + codigo);
-
-      // 🔄 Reiniciar formulario
       document.getElementById("ignForm").reset();
     });
   </script>
