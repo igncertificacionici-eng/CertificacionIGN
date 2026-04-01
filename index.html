@@ -9,12 +9,11 @@
     body { background: #f4f6f9; font-family: 'Segoe UI', Arial, sans-serif; }
     header { background: #002b5c; color: #fff; padding: 25px; }
     header h1 { margin: 0; font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; }
-    main { max-width: 750px; margin: 40px auto; }
+    main { max-width: 600px; margin: 40px auto; }
     .card { border: none; box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
     .form-label { font-weight: 600; color: #002b5c; }
     .btn-primary { background: #002b5c; border: none; font-weight: 600; }
     .btn-primary:hover { background: #001f40; }
-    .section-title { color: #444; font-size: 1.1rem; margin-bottom: 10px; font-weight: 500; }
   </style>
 </head>
 <body>
@@ -24,7 +23,7 @@
   </header>
   <main>
     <div class="card p-4">
-      <h2 class="mb-4 text-primary">Formulario de Evidencias</h2>
+      <h2 class="mb-4 text-primary">Subir Evidencia</h2>
       <form id="ignForm" class="needs-validation" novalidate>
         <div class="mb-3">
           <label for="codigo" class="form-label">Código del punto:</label>
@@ -32,17 +31,27 @@
           <div class="invalid-feedback">Debes ingresar un código.</div>
         </div>
 
-        <h5 class="section-title">Carga de archivos</h5>
-        <div class="mb-3"><label class="form-label">Proceso de monumentación:</label><input type="file" id="proceso" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Profundidad:</label><input type="file" id="profundidad" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Anclaje de disco de bronce:</label><input type="file" id="anclaje" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Incrustación del disco de bronce:</label><input type="file" id="incrustacion" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Disco instalado:</label><input type="file" id="disco" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Medición de altura de antena:</label><input type="file" id="altura" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Fotografías panorámicas:</label><input type="file" id="panoramicas" class="form-control" multiple></div>
-        <div class="mb-3"><label class="form-label">Videos:</label><input type="file" id="videos" class="form-control" multiple></div>
+        <div class="mb-3">
+          <label for="section" class="form-label">Selecciona la sección:</label>
+          <select id="section" class="form-select" required>
+            <option value="">-- Elegir sección --</option>
+            <option value="Proceso de monumentación">Proceso de monumentación</option>
+            <option value="Profundidad">Profundidad</option>
+            <option value="Anclaje de disco de bronce">Anclaje de disco de bronce</option>
+            <option value="Incrustación de disco de bronce">Incrustación de disco de bronce</option>
+            <option value="Disco instalado">Disco instalado</option>
+            <option value="Medición de altura de antena">Medición de altura de antena</option>
+            <option value="Fotografías panorámicas">Fotografías panorámicas</option>
+            <option value="Videos">Videos</option>
+          </select>
+        </div>
 
-        <button type="submit" class="btn btn-primary w-100 mt-3">Enviar Evidencias</button>
+        <div class="mb-3">
+          <label for="file" class="form-label">Selecciona archivo:</label>
+          <input type="file" id="file" class="form-control" accept="image/*,video/*" capture="environment" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Enviar Evidencia</button>
       </form>
     </div>
   </main>
@@ -62,12 +71,12 @@
       });
     }
 
-    async function uploadFile(file, codigo, campo) {
+    async function uploadFile(file, codigo, section) {
       const base64 = await toBase64(file);
       const formData = new FormData();
       formData.append("file", base64);
       formData.append("name", file.name);
-      formData.append("section", campo);
+      formData.append("section", section);
       formData.append("codigo", codigo);
 
       const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
@@ -77,19 +86,19 @@
     document.getElementById("ignForm").addEventListener("submit", async e => {
       e.preventDefault();
       const codigo = document.getElementById("codigo").value.trim();
-      if(!codigo){ alert("Debes ingresar un código"); return; }
+      const section = document.getElementById("section").value;
+      const fileInput = document.getElementById("file");
 
-      const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
-
-      for(const campo of campos){
-        const files = Array.from(document.getElementById(campo).files);
-        for(const file of files){
-          const result = await uploadFile(file, codigo, campo);
-          console.log(result);
-        }
+      if(!codigo || !section || fileInput.files.length === 0){
+        alert("Debes ingresar código, sección y archivo.");
+        return;
       }
 
-      alert("Evidencias enviadas correctamente para el punto: " + codigo);
+      const file = fileInput.files[0];
+      const result = await uploadFile(file, codigo, section);
+      console.log(result);
+
+      alert("Evidencia enviada correctamente para el punto: " + codigo + " → " + section);
       document.getElementById("ignForm").reset();
     });
   </script>
