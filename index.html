@@ -57,7 +57,7 @@
         <div id="fileInputs" class="mb-3">
           <div class="flex-input mb-2">
             <label class="form-label">📷 Archivo 1:</label>
-            <input type="file" id="file1" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
+            <input type="file" id="file1" name="file1" class="form-control" accept="image/*,video/*" capture="environment" required>
           </div>
         </div>
 
@@ -87,15 +87,15 @@
       div.classList.add("flex-input","mb-2");
       div.innerHTML = `
         <label class="form-label">📷 Archivo ${fileCount}:</label>
-        <input type="file" id="file${fileCount}" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
+        <input type="file" id="file${fileCount}" name="file${fileCount}" class="form-control" accept="image/*,video/*" capture="environment" required>
       `;
       fileInputsDiv.appendChild(div);
       actualizarContador();
     });
 
-    async function uploadFile(file, codigo, section) {
+    async function uploadFile(file, codigo, section, fieldName) {
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append(fieldName, file); // nombre único para cada archivo
       formData.append("name", file.name);
       formData.append("section", section);
       formData.append("codigo", codigo);
@@ -118,7 +118,7 @@
         const fileInput = document.getElementById("file" + i);
         if(fileInput && fileInput.files.length > 0){
           const file = fileInput.files[0];
-          const result = await uploadFile(file, codigo, section);
+          const result = await uploadFile(file, codigo, section, "file" + i);
           console.log(result);
         }
       }
@@ -128,7 +128,7 @@
       fileInputsDiv.innerHTML = `
         <div class="flex-input mb-2">
           <label class="form-label">📷 Archivo 1:</label>
-          <input type="file" id="file1" name="file" class="form-control" accept="image/*,video/*" capture="environment" required>
+          <input type="file" id="file1" name="file1" class="form-control" accept="image/*,video/*" capture="environment" required>
         </div>
       `;
       fileCount = 1;
