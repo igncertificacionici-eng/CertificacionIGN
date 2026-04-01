@@ -1,22 +1,91 @@
-<form id="folderForm">
-  <label for="nombre">Nombre de la carpeta:</label>
-  <input type="text" id="nombre" name="nombre" required>
-  <button type="submit">Crear Carpeta</button>
-</form>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificación IGN</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
+    header { background: #004aad; color: #fff; text-align: center; padding: 15px; }
+    header h1 { margin: 0; font-size: 20px; }
+    main { max-width: 600px; margin: 20px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    h2 { color: #004aad; font-size: 18px; margin-bottom: 15px; }
+    .section { margin-bottom: 20px; }
+    label { font-weight: bold; display: block; margin-bottom: 8px; }
+    input[type="text"], input[type="file"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+    button { width: 100%; padding: 12px; background: #004aad; color: #fff; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; }
+    button:hover { background: #00337a; }
+    @media (max-width: 600px) {
+      main { margin: 10px; padding: 15px; }
+      header h1 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Certificación Geodésica IGN</h1>
+  </header>
+  <main>
+    <h2>Formulario de Evidencias</h2>
+    <form id="ignForm">
+      <div class="section">
+        <label for="codigo">Código del punto:</label>
+        <input type="text" id="codigo" name="codigo" required>
+      </div>
 
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwk0hQbNIwiJOtedrQhDRARO6AZ3AZ0B9GHS7Z7mQDp0sSbZ1zMfKjTTWtJYCvKvtHz6Q/exec";
+      <div class="section"><label>Proceso de monumentación:</label><input type="file" id="proceso" multiple></div>
+      <div class="section"><label>Profundidad:</label><input type="file" id="profundidad" multiple></div>
+      <div class="section"><label>Anclaje de disco de bronce:</label><input type="file" id="anclaje" multiple></div>
+      <div class="section"><label>Incrustación del disco de bronce:</label><input type="file" id="incrustacion" multiple></div>
+      <div class="section"><label>Disco instalado:</label><input type="file" id="disco" multiple></div>
+      <div class="section"><label>Medición de altura de antena:</label><input type="file" id="altura" multiple></div>
+      <div class="section"><label>Fotografías panorámicas:</label><input type="file" id="panoramicas" multiple></div>
+      <div class="section"><label>Videos:</label><input type="file" id="videos" multiple></div>
 
-  document.getElementById("folderForm").addEventListener("submit", async e => {
-    e.preventDefault();
-    const nombre = document.getElementById("nombre").value.trim();
-    if(!nombre){ alert("Debes ingresar un nombre"); return; }
+      <button type="submit">Enviar Evidencias</button>
+    </form>
+  </main>
 
-    const formData = new FormData();
-    formData.append("nombre", nombre);
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/library/d/1tqjn9KZY22vjLjISflSEDs5p5WXUV-yU07RedXmtXM8CTqzSnVarQ86M/4";
 
-    const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
-    const text = await res.text();
-    alert(text);
-  });
-</script>
+    function toBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = error => reject(error);
+      });
+    }
+
+    async function uploadFile(file, codigo, campo) {
+      const base64 = await toBase64(file);
+      const formData = new FormData();
+      formData.append("file", base64);
+      formData.append("name", file.name);
+      formData.append("section", campo);
+      formData.append("codigo", codigo);
+
+      const res = await fetch(SCRIPT_URL, { method: "POST", body: formData });
+      return await res.text();
+    }
+
+    document.getElementById("ignForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const codigo = document.getElementById("codigo").value.trim();
+      if(!codigo){ alert("Debes ingresar un código"); return; }
+
+      const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
+
+      for(const campo of campos){
+        const files = Array.from(document.getElementById(campo).files);
+        for(const file of files){
+          const result = await uploadFile(file, codigo, campo);
+          console.log(result);
+        }
+      }
+
+      alert("Evidencias enviadas correctamente para el punto: " + codigo);
+    });
+  </script>
+</body>
+</html>
