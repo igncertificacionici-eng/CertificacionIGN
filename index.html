@@ -79,7 +79,16 @@
       const codigo = document.getElementById("codigo").value.trim();
       if(!codigo){ alert("Debes ingresar un código"); return; }
 
-      const campos = ["proceso","profundidad","anclaje","incrustacion","disco","altura","panoramicas","videos"];
+      const campos = [
+  "2. Proceso de monumentación",
+  "3. Profundidad",
+  "4. Anclaje de disco de bronce",
+  "5. Incrustación de disco de bronce",
+  "6. Disco instalado",
+  "7. Medición de altura de antena",
+  "8. Fotografia panoramicas",
+  "9. Videos"
+];
 
       for(const campo of campos){
         const files = Array.from(document.getElementById(campo).files);
